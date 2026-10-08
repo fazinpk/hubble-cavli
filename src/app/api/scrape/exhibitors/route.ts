@@ -1,4 +1,4 @@
-import { after } from "next/server";
+import { after, connection } from "next/server";
 
 import {
   hasValidScrapeSecret,
@@ -54,5 +54,6 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
+  await connection();
   return Response.json(await getScrapeStatus());
 }

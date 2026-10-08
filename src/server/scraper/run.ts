@@ -1,5 +1,7 @@
 import "server-only";
+import { revalidateTag } from "next/cache";
 
+import { EXHIBITORS_CACHE_TAG } from "@consts/exhibitor.const";
 import { ScrapeRunStatus, type ScrapeRun } from "@generated/prisma/client";
 import { db } from "@server/db";
 import { getServerEnv } from "@server/env";
@@ -157,6 +159,7 @@ export const executeScrapeRun = async (run: ScrapeRun) => {
       where: { id: run.id },
       data: { status: ScrapeRunStatus.SUCCESS, finishedAt: new Date() },
     });
+    revalidateTag(EXHIBITORS_CACHE_TAG, { expire: 0 });
   } catch (error) {
     console.error(`Scrape run ${run.id} failed:`, error);
     await db.scrapeRun.update({
