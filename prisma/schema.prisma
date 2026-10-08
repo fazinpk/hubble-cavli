@@ -113,7 +113,6 @@ model SocialLink {
 
 model Exhibitor {
   id            Int      @id @default(autoincrement())
-  /// MMI Connect customer id: one per company per show
   mmiCustomerId Int      @unique @map("mmi_customer_id")
   companyId     Int      @map("company_id")
   showId        Int      @map("show_id")
@@ -164,6 +163,8 @@ model ScrapeRun {
   finishedAt      DateTime?       @map("finished_at") @db.Timestamptz(3)
   pagesFetched    Int             @default(0) @map("pages_fetched")
   exhibitorsFound Int             @default(0) @map("exhibitors_found")
+  exhibitorsSaved Int             @default(0) @map("exhibitors_saved")
+  detailFailures  Int             @default(0) @map("detail_failures")
   errorMessage    String?         @map("error_message")
 
   @@index([status, startedAt])

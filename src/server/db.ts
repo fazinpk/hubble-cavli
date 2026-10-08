@@ -1,11 +1,15 @@
 import "server-only";
 import { PrismaPg } from "@prisma/adapter-pg";
 
-import { PrismaClient } from "../generated/prisma/client";
+import { PrismaClient } from "@generated/prisma/client";
 
 const createPrismaClient = () =>
   new PrismaClient({
-    adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+    adapter: new PrismaPg({
+      connectionString: process.env.DATABASE_URL,
+      // The adapter sends timestamps without an offset; pin the session to UTC so a non-UTC server doesn't shift them.
+      options: "-c TimeZone=UTC",
+    }),
   });
 
 // Next.js dev hot reload re-runs this module; reuse one client so connections don't pile up.
