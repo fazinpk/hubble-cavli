@@ -1,0 +1,203 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum CategoryType {
+  SECTOR
+  EXHIBITOR
+}
+
+enum SocialPlatform {
+  LINKEDIN
+  TWITTER
+  FACEBOOK
+  YOUTUBE
+}
+
+enum ScrapeRunStatus {
+  RUNNING
+  SUCCESS
+  FAILED
+}
+
+enum ConsultationStatus {
+  PENDING
+  BOOKED
+  FAILED
+}
+
+model Event {
+  id    Int    @id @default(autoincrement())
+  slug  String @unique
+  shows Show[]
+
+  @@map("events")
+}
+
+model Show {
+  /// MMI Connect show id
+  id       Int      @id
+  eventId  Int      @map("event_id")
+  name     String
+  startsAt DateTime @map("starts_at") @db.Timestamptz(3)
+  endsAt   DateTime @map("ends_at") @db.Timestamptz(3)
+
+  event      Event       @relation(fields: [eventId], references: [id])
+  booths     Booth[]
+  exhibitors Exhibitor[]
+
+  @@index([eventId])
+  @@map("shows")
+}
+
+model Booth {
+  showId Int     @map("show_id")
+  code   String
+  hall   String?
+
+  show       Show        @relation(fields: [showId], references: [id])
+  exhibitors Exhibitor[]
+
+  @@id([showId, code])
+  @@map("booths")
+}
+
+model Country {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  companies Company[]
+
+  @@map("countries")
+}
+
+model Company {
+  id           Int      @id @default(autoincrement())
+  mmiUserId    String   @unique @map("mmi_user_id")
+  name         String
+  website      String?
+  logoUrl      String?  @map("logo_url")
+  profile      String?
+  addressLine1 String?  @map("address_line1")
+  addressLine2 String?  @map("address_line2")
+  city         String?
+  state        String?
+  postalCode   String?  @map("postal_code")
+  countryId    Int?     @map("country_id")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  country     Country?     @relation(fields: [countryId], references: [id])
+  socialLinks SocialLink[]
+  exhibitors  Exhibitor[]
+
+  @@index([countryId])
+  @@map("companies")
+}
+
+model SocialLink {
+  id        Int            @id @default(autoincrement())
+  companyId Int            @map("company_id")
+  platform  SocialPlatform
+  url       String
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@unique([companyId, platform])
+  @@map("social_links")
+}
+
+model Exhibitor {
+  id            Int      @id @default(autoincrement())
+  /// MMI Connect customer id: one per company per show
+  mmiCustomerId Int      @unique @map("mmi_customer_id")
+  companyId     Int      @map("company_id")
+  showId        Int      @map("show_id")
+  boothCode     String?  @map("booth_code")
+  lastSeenAt    DateTime @map("last_seen_at") @db.Timestamptz(3)
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  company    Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  show       Show                @relation(fields: [showId], references: [id])
+  booth      Booth?              @relation(fields: [showId, boothCode], references: [showId, code], onDelete: Restrict)
+  categories ExhibitorCategory[]
+
+  @@unique([companyId, showId])
+  @@index([showId, boothCode])
+  @@index([lastSeenAt])
+  @@map("exhibitors")
+}
+
+model Category {
+  /// MMI Connect category id
+  id           Int                 @id
+  type         CategoryType
+  mainCategory String              @map("main_category")
+  name         String?
+  subCategory  String?             @map("sub_category")
+  exhibitors   ExhibitorCategory[]
+
+  @@map("categories")
+}
+
+model ExhibitorCategory {
+  exhibitorId Int @map("exhibitor_id")
+  categoryId  Int @map("category_id")
+
+  exhibitor Exhibitor @relation(fields: [exhibitorId], references: [id], onDelete: Cascade)
+  category  Category  @relation(fields: [categoryId], references: [id])
+
+  @@id([exhibitorId, categoryId])
+  @@index([categoryId])
+  @@map("exhibitor_categories")
+}
+
+model ScrapeRun {
+  id              Int             @id @default(autoincrement())
+  status          ScrapeRunStatus @default(RUNNING)
+  startedAt       DateTime        @default(now()) @map("started_at") @db.Timestamptz(3)
+  finishedAt      DateTime?       @map("finished_at") @db.Timestamptz(3)
+  pagesFetched    Int             @default(0) @map("pages_fetched")
+  exhibitorsFound Int             @default(0) @map("exhibitors_found")
+  errorMessage    String?         @map("error_message")
+
+  @@index([status, startedAt])
+  @@map("scrape_runs")
+}
+
+model Consultation {
+  id        String             @id @default(cuid(2))
+  name      String
+  email     String
+  phone     String?
+  company   String?
+  message   String
+  status    ConsultationStatus @default(PENDING)
+  createdAt DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime           @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  booking Booking?
+
+  @@index([email])
+  @@map("consultations")
+}
+
+model Booking {
+  id                 String    @id @default(cuid(2))
+  consultationId     String    @unique @map("consultation_id")
+  startsAt           DateTime  @unique @map("starts_at") @db.Timestamptz(3)
+  endsAt             DateTime  @map("ends_at") @db.Timestamptz(3)
+  googleEventId      String?   @map("google_event_id")
+  meetLink           String?   @map("meet_link")
+  confirmationSentAt DateTime? @map("confirmation_sent_at") @db.Timestamptz(3)
+  createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  consultation Consultation @relation(fields: [consultationId], references: [id], onDelete: Cascade)
+
+  @@map("bookings")
+}
