@@ -1,7 +1,15 @@
+import ConsultSection from "@modules/home/components/consult-section";
+import Hero from "@modules/home/components/hero";
+import PlatformFeatures from "@modules/home/components/platform-features";
+import ProductGrid from "@modules/home/components/product-grid";
+
 export default function HomePage() {
   return (
-    <main className="flex flex-1 items-center justify-center p-8">
-      <h1 className="text-3xl font-semibold">Hubble by Cavli Wireless</h1>
-    </main>
+    <>
+      <Hero />
+      <ProductGrid />
+      <PlatformFeatures />
+      <ConsultSection />
+    </>
   );
 }

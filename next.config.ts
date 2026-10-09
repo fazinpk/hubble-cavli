@@ -9,6 +9,11 @@ const nextConfig: NextConfig = {
         hostname: "mmiconnectstorage.azureedge.net",
         pathname: "/global-profile/**",
       },
+      {
+        protocol: "https",
+        hostname: "d8wojkg2185gh.cloudfront.net",
+        pathname: "/strapi/**",
+      },
     ],
   },
 };
