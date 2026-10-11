@@ -18,6 +18,15 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // A demo of another company's brand: keep every response out of search results.
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+    ];
+  },
   // The CDN sends no CORS headers, so the browser loads models from our own origin.
   async rewrites() {
     return [

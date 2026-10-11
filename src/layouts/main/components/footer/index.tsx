@@ -1,6 +1,7 @@
 import { Suspense, type FC } from "react";
 import Link from "next/link";
 
+import { CAVLI_WEBSITE_URL } from "@consts/config.const";
 import { PRODUCTS } from "@consts/products.const";
 
 import BrandMark from "../brand-mark";
@@ -42,8 +43,18 @@ const Footer: FC = () => (
     </div>
 
     <div className="border-t border-white/10">
-      <p className="mx-auto max-w-7xl px-4 py-4 text-xs text-white/50 sm:px-6">
-        © 2026 Cavli Wireless · Hubble demo project
+      <p className="mx-auto max-w-7xl px-4 py-4 text-xs text-white/60 sm:px-6">
+        Demo built by Fazin P K for a Cavli Wireless assessment. Not an official
+        Cavli Wireless website. Visit{" "}
+        <a
+          href={CAVLI_WEBSITE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-semibold text-white/85 underline hover:text-white"
+        >
+          cavliwireless.com
+        </a>
+        .
       </p>
     </div>
   </footer>

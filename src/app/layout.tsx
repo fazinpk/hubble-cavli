@@ -14,6 +14,7 @@ export const metadata: Metadata = {
   title: "Hubble by Cavli Wireless",
   description:
     "Cellular IoT modules and the Hubble connectivity platform by Cavli Wireless.",
+  robots: { index: false, follow: false },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
