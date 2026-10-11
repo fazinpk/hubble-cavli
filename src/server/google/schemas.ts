@@ -21,3 +21,9 @@ export const freeBusyResponseSchema = z.object({
 });
 
 export type BusyInterval = z.infer<typeof intervalSchema>;
+
+export const eventResponseSchema = z.object({
+  id: z.string().min(1),
+  iCalUID: z.string().min(1),
+  hangoutLink: z.url().optional(),
+});

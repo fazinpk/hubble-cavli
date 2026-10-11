@@ -32,3 +32,17 @@ export const getGoogleEnv = (): GoogleEnv => {
   cachedGoogleEnv ??= googleEnvSchema.parse(process.env);
   return cachedGoogleEnv;
 };
+
+const mailEnvSchema = z.object({
+  GMAIL_USER: z.email(),
+  GMAIL_APP_PASSWORD: z.string().length(16),
+});
+
+export type MailEnv = z.infer<typeof mailEnvSchema>;
+
+let cachedMailEnv: MailEnv | undefined;
+
+export const getMailEnv = (): MailEnv => {
+  cachedMailEnv ??= mailEnvSchema.parse(process.env);
+  return cachedMailEnv;
+};
