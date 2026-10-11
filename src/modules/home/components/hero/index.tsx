@@ -52,7 +52,7 @@ const Hero: FC = () => {
                   src={product.imageUrl}
                   alt={`${product.name} module`}
                   fill
-                  priority={index < 2}
+                  loading={index < 2 ? "eager" : "lazy"}
                   sizes="(min-width: 1024px) 22vw, 45vw"
                   className="object-contain p-3"
                 />
