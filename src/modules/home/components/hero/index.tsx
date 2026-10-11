@@ -53,6 +53,7 @@ const Hero: FC = () => {
                   alt={`${product.name} module`}
                   fill
                   loading={index < 2 ? "eager" : "lazy"}
+                  fetchPriority={index === 0 ? "high" : "auto"}
                   sizes="(min-width: 1024px) 22vw, 45vw"
                   className="object-contain p-3"
                 />
