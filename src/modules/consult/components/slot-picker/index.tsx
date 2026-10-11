@@ -4,6 +4,7 @@ import type { FC } from "react";
 import classNames from "classnames";
 import { CalendarClockIcon, LoaderIcon, RotateCcwIcon } from "lucide-react";
 
+import { buttonVariants } from "@components/ui/button/consts";
 import { APP_TIMEZONE_LABEL } from "@consts/config.const";
 import { SLOT_DURATION_MINUTES } from "@consts/booking.const";
 import { FORM_CARD_CLASS_NAME } from "@modules/consult/consts";
@@ -14,6 +15,7 @@ import {
   formatWeekday,
 } from "@utils/date";
 
+import BookingConfirmation from "../booking-confirmation";
 import {
   SLOT_OPTION_CLASS_NAME,
   SLOT_OPTION_IDLE_CLASS_NAME,
@@ -28,7 +30,7 @@ const optionClassName = (selected: boolean) =>
     selected ? SLOT_OPTION_SELECTED_CLASS_NAME : SLOT_OPTION_IDLE_CLASS_NAME,
   );
 
-const SlotPicker: FC<SlotPickerProps> = ({ name }) => {
+const SlotPicker: FC<SlotPickerProps> = ({ consultationId, name, email }) => {
   const {
     status,
     days,
@@ -38,7 +40,13 @@ const SlotPicker: FC<SlotPickerProps> = ({ name }) => {
     selectDate,
     selectSlot,
     retry,
-  } = useSlotPickerController();
+    confirm,
+    isConfirming,
+    bookingError,
+    booking,
+  } = useSlotPickerController(consultationId);
+
+  if (booking) return <BookingConfirmation booking={booking} email={email} />;
 
   return (
     <div className={FORM_CARD_CLASS_NAME}>
@@ -141,6 +149,33 @@ const SlotPicker: FC<SlotPickerProps> = ({ name }) => {
               : "Select a time to continue."}
           </p>
         </>
+      )}
+
+      {bookingError && (
+        <p
+          className="mt-5 rounded-xl bg-danger/10 px-4 py-3 text-sm text-danger"
+          role="alert"
+        >
+          {bookingError}
+        </p>
+      )}
+
+      {status === "ready" && activeDay && (
+        <button
+          type="button"
+          onClick={() => void confirm()}
+          disabled={!selectedSlot || isConfirming}
+          className={buttonVariants({
+            size: "lg",
+            className:
+              "mt-6 w-full disabled:cursor-not-allowed disabled:opacity-60",
+          })}
+        >
+          {isConfirming && (
+            <LoaderIcon size={18} className="animate-spin" aria-hidden />
+          )}
+          {isConfirming ? "Booking your call…" : "Confirm booking"}
+        </button>
       )}
     </div>
   );

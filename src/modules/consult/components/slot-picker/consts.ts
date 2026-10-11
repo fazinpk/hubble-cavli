@@ -8,3 +8,6 @@ export const SLOT_OPTION_IDLE_CLASS_NAME =
 
 export const SLOT_OPTION_SELECTED_CLASS_NAME =
   "border-brand bg-brand text-white shadow-md shadow-brand/25";
+
+export const BOOKING_NETWORK_ERROR =
+  "We couldn't reach the server. Check your connection and try again.";

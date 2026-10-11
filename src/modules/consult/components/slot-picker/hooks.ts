@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 
-import type { SlotDay, SlotsResponse } from "@app-types/booking.type";
+import type {
+  BookingErrorResponse,
+  BookingResponse,
+  SlotDay,
+  SlotsResponse,
+} from "@app-types/booking.type";
 
+import { BOOKING_NETWORK_ERROR } from "./consts";
 import type { SlotsStatus } from "./type";
 
 const fetchSlotDays = async () => {
@@ -10,12 +16,15 @@ const fetchSlotDays = async () => {
   return ((await response.json()) as SlotsResponse).days;
 };
 
-export const useSlotPickerController = () => {
+export const useSlotPickerController = (consultationId: string) => {
   const [status, setStatus] = useState<SlotsStatus>("loading");
   const [days, setDays] = useState<SlotDay[]>([]);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
+  const [isConfirming, setIsConfirming] = useState(false);
+  const [bookingError, setBookingError] = useState<string | null>(null);
+  const [booking, setBooking] = useState<BookingResponse | null>(null);
 
   useEffect(() => {
     let ignore = false;
@@ -23,7 +32,11 @@ export const useSlotPickerController = () => {
       .then((availableDays) => {
         if (ignore) return;
         setDays(availableDays);
-        setSelectedDate(availableDays[0]?.date ?? null);
+        setSelectedDate((current) =>
+          availableDays.some(({ date }) => date === current)
+            ? current
+            : (availableDays[0]?.date ?? null),
+        );
         setSelectedSlot(null);
         setStatus("ready");
       })
@@ -40,6 +53,37 @@ export const useSlotPickerController = () => {
     setAttempt((current) => current + 1);
   };
 
+  const selectSlot = (slot: string) => {
+    setSelectedSlot(slot);
+    setBookingError(null);
+  };
+
+  const confirm = async () => {
+    if (!selectedSlot) return;
+    setIsConfirming(true);
+    setBookingError(null);
+    try {
+      const response = await fetch(`/api/consult/${consultationId}/book`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ startsAt: selectedSlot }),
+      });
+
+      if (response.ok) {
+        setBooking((await response.json()) as BookingResponse);
+        return;
+      }
+
+      const { error, code } = (await response.json()) as BookingErrorResponse;
+      setBookingError(error);
+      if (code === "slot_unavailable") setAttempt((current) => current + 1);
+    } catch {
+      setBookingError(BOOKING_NETWORK_ERROR);
+    } finally {
+      setIsConfirming(false);
+    }
+  };
+
   return {
     status,
     days,
@@ -47,7 +91,11 @@ export const useSlotPickerController = () => {
     selectedSlot,
     activeDay: days.find(({ date }) => date === selectedDate),
     selectDate: setSelectedDate,
-    selectSlot: setSelectedSlot,
+    selectSlot,
     retry,
+    confirm,
+    isConfirming,
+    bookingError,
+    booking,
   };
 };

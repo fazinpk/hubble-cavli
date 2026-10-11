@@ -63,5 +63,6 @@ export const useConsultFormController = () => {
     submitError,
     consultation,
     submittedName: form.getValues("name"),
+    submittedEmail: form.getValues("email"),
   };
 };

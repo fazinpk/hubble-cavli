@@ -16,14 +16,28 @@ import SlotPicker from "../slot-picker";
 import { useConsultFormController } from "./hooks";
 
 const ConsultForm: FC = () => {
-  const { form, onSubmit, submitError, consultation, submittedName } =
-    useConsultFormController();
+  const {
+    form,
+    onSubmit,
+    submitError,
+    consultation,
+    submittedName,
+    submittedEmail,
+  } = useConsultFormController();
   const {
     register,
     formState: { errors, isSubmitting },
   } = form;
 
-  if (consultation) return <SlotPicker name={submittedName} />;
+  if (consultation) {
+    return (
+      <SlotPicker
+        consultationId={consultation.id}
+        name={submittedName}
+        email={submittedEmail}
+      />
+    );
+  }
 
   const controlProps = (name: keyof ConsultInput, required = false) => {
     const id = `consult-${name}`;
@@ -40,9 +54,9 @@ const ConsultForm: FC = () => {
   return (
     <form onSubmit={onSubmit} noValidate className={FORM_CARD_CLASS_NAME}>
       <div className="mb-6">
-        <h3 className="text-xl font-bold text-navy">Your details</h3>
+        <h3 className="text-xl font-bold text-navy">Book a meeting</h3>
         <p className="mt-1 text-sm text-muted">
-          Tell us about your project. You&apos;ll pick a time next.
+          Fill out the form to book a consultation!
         </p>
       </div>
 
@@ -133,7 +147,7 @@ const ConsultForm: FC = () => {
           {isSubmitting && (
             <LoaderIcon size={18} className="animate-spin" aria-hidden />
           )}
-          {isSubmitting ? "Sending…" : "Continue to pick a slot"}
+          {isSubmitting ? "Sending…" : "Choose a time slot"}
         </button>
       </div>
     </form>
