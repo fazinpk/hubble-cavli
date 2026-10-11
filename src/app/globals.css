@@ -25,3 +25,11 @@ html {
 body {
   @apply bg-white text-ink;
 }
+
+@layer base {
+  /* Tailwind v4 resets buttons to the default cursor. */
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}

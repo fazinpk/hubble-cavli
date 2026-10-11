@@ -56,6 +56,7 @@ const ProductMedia: FC<ProductMediaProps> = ({ product }) => {
               onClick={closeViewer}
               className="grid size-11 place-items-center rounded-full text-white transition hover:bg-white/10"
               aria-label="Close 3D view"
+              title="Close"
             >
               <XIcon size={30} aria-hidden />
             </button>
