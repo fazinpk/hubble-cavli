@@ -19,13 +19,13 @@ A single Next.js app serves both the frontend and the backend: Route Handlers se
 
 ### Frontend
 
-| Path              | Contents                                                 |
-| ----------------- | -------------------------------------------------------- |
-| `src/app/`        | Pages, root layout and global styles                     |
-| `src/layouts/`    | Page layouts (header, footer)                            |
-| `src/modules/`    | Feature modules (`home`, `product`) and their components |
-| `src/components/` | Reusable UI components                                   |
-| `public/`         | Static assets                                            |
+| Path              | Contents                                                            |
+| ----------------- | ------------------------------------------------------------------- |
+| `src/app/`        | Pages, root layout and global styles                                |
+| `src/layouts/`    | Page layouts (header, footer)                                       |
+| `src/modules/`    | Feature modules (`home`, `product`, `consult`) and their components |
+| `src/components/` | Reusable UI components                                              |
+| `public/`         | Static assets                                                       |
 
 ### Shared
 

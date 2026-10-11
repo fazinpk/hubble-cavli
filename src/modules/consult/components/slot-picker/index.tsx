@@ -6,6 +6,7 @@ import { CalendarClockIcon, LoaderIcon, RotateCcwIcon } from "lucide-react";
 
 import { APP_TIMEZONE_LABEL } from "@consts/config.const";
 import { SLOT_DURATION_MINUTES } from "@consts/booking.const";
+import { FORM_CARD_CLASS_NAME } from "@modules/consult/consts";
 import {
   formatDayMonth,
   formatDayTime,
@@ -13,7 +14,6 @@ import {
   formatWeekday,
 } from "@utils/date";
 
-import { FORM_CARD_CLASS_NAME } from "../consult-form/consts";
 import {
   SLOT_OPTION_CLASS_NAME,
   SLOT_OPTION_IDLE_CLASS_NAME,

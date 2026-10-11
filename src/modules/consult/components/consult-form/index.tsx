@@ -9,10 +9,10 @@ import {
   FIELD_CONTROL_CLASS_NAME,
   getErrorId,
 } from "@components/ui/form-field/consts";
+import { FORM_CARD_CLASS_NAME } from "@modules/consult/consts";
 import type { ConsultInput } from "@validation/consult.schema";
 
 import SlotPicker from "../slot-picker";
-import { FORM_CARD_CLASS_NAME } from "./consts";
 import { useConsultFormController } from "./hooks";
 
 const ConsultForm: FC = () => {
