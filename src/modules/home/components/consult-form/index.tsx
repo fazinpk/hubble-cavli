@@ -1,7 +1,7 @@
 "use client";
 
 import type { FC } from "react";
-import { CheckCircle2Icon, LoaderIcon } from "lucide-react";
+import { LoaderIcon } from "lucide-react";
 
 import { buttonVariants } from "@components/ui/button/consts";
 import FormField from "@components/ui/form-field";
@@ -11,6 +11,7 @@ import {
 } from "@components/ui/form-field/consts";
 import type { ConsultInput } from "@validation/consult.schema";
 
+import SlotPicker from "../slot-picker";
 import { FORM_CARD_CLASS_NAME } from "./consts";
 import { useConsultFormController } from "./hooks";
 
@@ -22,23 +23,7 @@ const ConsultForm: FC = () => {
     formState: { errors, isSubmitting },
   } = form;
 
-  if (consultation) {
-    return (
-      <div className={`${FORM_CARD_CLASS_NAME} text-center`} role="status">
-        <CheckCircle2Icon
-          size={40}
-          className="mx-auto text-brand"
-          aria-hidden
-        />
-        <h3 className="mt-4 text-xl font-bold text-navy">
-          Thanks, {submittedName}
-        </h3>
-        <p className="mt-2 text-muted">
-          We&apos;ve received your request. Next, pick a time for your call.
-        </p>
-      </div>
-    );
-  }
+  if (consultation) return <SlotPicker name={submittedName} />;
 
   const controlProps = (name: keyof ConsultInput, required = false) => {
     const id = `consult-${name}`;
