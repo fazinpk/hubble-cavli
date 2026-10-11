@@ -14,7 +14,7 @@ const NavBar: FC = () => {
   const { isMenuOpen, toggleMenu, closeMenu } = useNavBarController();
 
   return (
-    <nav className="border-b border-line bg-white/95 backdrop-blur">
+    <nav className="border-b border-white/60 bg-white/70 shadow-sm shadow-navy/5 backdrop-blur-xl backdrop-saturate-150">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
         <BrandMark />
 
@@ -34,7 +34,7 @@ const NavBar: FC = () => {
         <button
           type="button"
           onClick={toggleMenu}
-          className="grid size-10 place-items-center rounded-lg text-navy hover:bg-surface md:hidden"
+          className="grid size-10 place-items-center rounded-lg text-navy hover:bg-white/60 md:hidden"
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           aria-expanded={isMenuOpen}
           aria-controls="mobile-menu"
@@ -46,14 +46,14 @@ const NavBar: FC = () => {
       {isMenuOpen && (
         <div
           id="mobile-menu"
-          className="border-t border-line px-4 pb-4 md:hidden"
+          className="border-t border-navy/10 px-4 pb-4 md:hidden"
         >
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={closeMenu}
-              className="block border-b border-line py-3 font-semibold text-ink"
+              className="block border-b border-navy/10 py-3 font-semibold text-ink hover:text-brand"
             >
               {link.label}
             </Link>
