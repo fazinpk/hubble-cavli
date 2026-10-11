@@ -1,7 +1,10 @@
-import type { FC } from "react";
+import { Suspense, type FC } from "react";
 import { CheckIcon } from "lucide-react";
 
 import SectionHeading from "@components/ui/section-heading";
+
+import ConsultForm from "../consult-form";
+import { FORM_CARD_CLASS_NAME } from "../consult-form/consts";
 
 const BENEFITS = [
   "Pick a 30-minute slot that suits you",
@@ -35,9 +38,11 @@ const ConsultSection: FC = () => (
         ))}
       </ul>
     </div>
-    <div className="grid min-h-80 place-items-center rounded-2xl border border-dashed border-line bg-surface p-8 text-center text-muted">
-      Consultation booking form
-    </div>
+    <Suspense
+      fallback={<div className={`${FORM_CARD_CLASS_NAME} min-h-120`} />}
+    >
+      <ConsultForm />
+    </Suspense>
   </section>
 );
 
