@@ -54,7 +54,13 @@ const Footer: FC = () => (
         >
           cavliwireless.com
         </a>
-        .
+        .{" "}
+        <Link
+          href="/privacy"
+          className="font-semibold text-white/85 underline hover:text-white"
+        >
+          Privacy policy
+        </Link>
       </p>
     </div>
   </footer>
