@@ -1,0 +1,45 @@
+name: Docker
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  compose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Build images
+        run: docker compose build
+
+      - name: Start database, migrations and app
+        run: docker compose up -d app
+
+      - name: Wait for the app
+        run: |
+          for attempt in $(seq 1 30); do
+            curl -fs -o /dev/null http://localhost:3000/ && exit 0
+            sleep 2
+          done
+          exit 1
+
+      - name: Smoke test
+        run: |
+          curl -fsS -o /dev/null -w "GET / %{http_code}\n" http://localhost:3000/
+          curl -fsS -o /dev/null -w "GET /products/c41qs %{http_code}\n" http://localhost:3000/products/c41qs
+          curl -fsS -o /dev/null -w "GET /api/slots %{http_code}\n" http://localhost:3000/api/slots
+          curl -fsS -w "\nPOST /api/consult %{http_code}\n" \
+            -H "content-type: application/json" \
+            -d '{"name":"CI Check","email":"ci@example.com","phone":"","company":"","message":"Smoke test from GitHub Actions"}' \
+            http://localhost:3000/api/consult
+
+      - name: Show logs
+        if: failure()
+        run: docker compose logs
+
+      - name: Stop
+        if: always()
+        run: docker compose down -v

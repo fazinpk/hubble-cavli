@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 const CAVLI_CDN = "https://d8wojkg2185gh.cloudfront.net";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   cacheComponents: true,
   images: {
     remotePatterns: [
