@@ -9,6 +9,7 @@ import {
   CALENDAR_API_URL,
   GOOGLE_REQUEST_TIMEOUT_MS,
   MEET_LINK_RETRY_DELAY_MS,
+  OWNER_REMINDERS,
 } from "./consts";
 import {
   eventResponseSchema,
@@ -104,6 +105,7 @@ export const createMeetEvent = async ({
           start: { dateTime: start.toISOString(), timeZone: APP_TIMEZONE },
           end: { dateTime: end.toISOString(), timeZone: APP_TIMEZONE },
           attendees: [{ email: attendee.email, displayName: attendee.name }],
+          reminders: { useDefault: false, overrides: OWNER_REMINDERS },
           conferenceData: {
             createRequest: {
               requestId,
