@@ -73,7 +73,7 @@ const ConsultForm: FC<ConsultFormProps> = ({ product }) => {
               {...controlProps("name", true)}
               type="text"
               autoComplete="name"
-              placeholder="Your full name"
+              placeholder="Enter full name"
             />
           </FormField>
           <FormField
@@ -86,7 +86,7 @@ const ConsultForm: FC<ConsultFormProps> = ({ product }) => {
               {...controlProps("email", true)}
               type="email"
               autoComplete="email"
-              placeholder="you@company.com"
+              placeholder="Enter email ID"
             />
           </FormField>
           <FormField
@@ -98,7 +98,7 @@ const ConsultForm: FC<ConsultFormProps> = ({ product }) => {
               {...controlProps("phone")}
               type="tel"
               autoComplete="tel"
-              placeholder="+91 98765 43210"
+              placeholder="Enter Phone number"
             />
           </FormField>
           <FormField
@@ -110,7 +110,7 @@ const ConsultForm: FC<ConsultFormProps> = ({ product }) => {
               {...controlProps("company")}
               type="text"
               autoComplete="organization"
-              placeholder="Your company name"
+              placeholder="Enter company name"
             />
           </FormField>
         </div>
@@ -124,7 +124,7 @@ const ConsultForm: FC<ConsultFormProps> = ({ product }) => {
           <textarea
             {...controlProps("message", true)}
             rows={4}
-            placeholder="Tell us about your project and which modules you're considering."
+            placeholder="Enter your message"
           />
         </FormField>
 
