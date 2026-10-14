@@ -36,6 +36,7 @@ export const getGoogleEnv = (): GoogleEnv => {
 const mailEnvSchema = z.object({
   GMAIL_USER: z.email(),
   GMAIL_APP_PASSWORD: z.string().length(16),
+  BOOKING_NOTIFY_EMAIL: z.email().optional(),
 });
 
 export type MailEnv = z.infer<typeof mailEnvSchema>;

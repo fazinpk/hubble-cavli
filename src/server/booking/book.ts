@@ -7,7 +7,10 @@ import {
   deleteCalendarEvent,
   type MeetEvent,
 } from "@server/google/calendar";
-import { sendBookingConfirmation } from "@server/mail/booking-email";
+import {
+  sendBookingConfirmation,
+  sendOwnerBookingNotification,
+} from "@server/mail/booking-email";
 import {
   confirmBooking,
   findConsultationForBooking,
@@ -120,6 +123,21 @@ export const bookConsultation = async (
     throw error;
   }
 
+  const ownerNotified = sendOwnerBookingNotification({
+    name: consultation.name,
+    email: consultation.email,
+    phone: consultation.phone,
+    company: consultation.company,
+    message: consultation.message,
+    start: startsAt,
+    meetLink: event.meetLink,
+  }).catch((error: unknown) => {
+    console.error(
+      `Owner notification for booking ${booking.id} failed:`,
+      error,
+    );
+  });
+
   const emailSent = await sendBookingConfirmation({
     uid: event.iCalUid,
     name: consultation.name,
@@ -140,6 +158,7 @@ export const bookConsultation = async (
     },
   );
   if (emailSent) await markConfirmationSent(booking.id);
+  await ownerNotified;
 
   return { ok: true, startsAt, endsAt, meetLink: event.meetLink, emailSent };
 };
