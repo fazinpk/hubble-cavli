@@ -4,7 +4,7 @@ A Next.js landing page for Hubble, with product pages that include a 3D viewer, 
 
 ## Demo
 
-**Live site:** https://hubble-cavli.vercel.app
+**Live site:** https://hubble-cavli-fazin-demo.vercel.app
 
 The C41QS page uses the 3D model from the brief. The other four product pages use each module's own model from Cavli's website, loaded the same way.
 
@@ -58,7 +58,7 @@ curl http://localhost:3000/api/scrape/exhibitors
 
 Running it again updates existing rows instead of creating duplicates. While a scrape is running the endpoint returns `409`, and for 5 minutes after a successful run it returns `429` (`SCRAPE_COOLDOWN_SECONDS`).
 
-For the live site, replace `http://localhost:3000` with `https://hubble-cavli.vercel.app`. Its secret is shared separately.
+For the live site, replace `http://localhost:3000` with `https://hubble-cavli-fazin-demo.vercel.app`. Its secret is shared separately.
 
 ## Database
 
