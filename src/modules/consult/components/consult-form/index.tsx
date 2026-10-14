@@ -14,8 +14,9 @@ import type { ConsultInput } from "@validation/consult.schema";
 
 import SlotPicker from "../slot-picker";
 import { useConsultFormController } from "./hooks";
+import type { ConsultFormProps } from "./type";
 
-const ConsultForm: FC = () => {
+const ConsultForm: FC<ConsultFormProps> = ({ product }) => {
   const {
     form,
     onSubmit,
@@ -23,7 +24,7 @@ const ConsultForm: FC = () => {
     consultation,
     submittedName,
     submittedEmail,
-  } = useConsultFormController();
+  } = useConsultFormController(product);
   const {
     register,
     formState: { errors, isSubmitting },

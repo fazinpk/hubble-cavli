@@ -3,8 +3,8 @@ import Link from "next/link";
 import { CheckIcon, ChevronRightIcon, ExternalLinkIcon } from "lucide-react";
 import classNames from "classnames";
 
-import ButtonLink from "@components/ui/button-link";
 import { PRODUCTS } from "@consts/products.const";
+import ConsultModal from "@modules/consult/components/consult-modal";
 
 import ProductCard from "../product-card";
 import ProductMedia from "../product-media";
@@ -74,9 +74,7 @@ const ProductDetails: FC<ProductDetailsProps> = ({ product }) => {
           </ul>
 
           <div className="mt-8 flex flex-wrap items-center gap-4">
-            <ButtonLink href={`/?product=${product.slug}#consult`} size="lg">
-              Consult about {product.name}
-            </ButtonLink>
+            <ConsultModal product={product} />
             <a
               href={product.sourceUrl}
               target="_blank"

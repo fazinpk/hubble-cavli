@@ -1,3 +1,4 @@
+import type { Product } from "@app-types/product.type";
 import type { ConsultInput } from "@validation/consult.schema";
 
 export interface ConsultErrorResponse {
@@ -8,4 +9,8 @@ export interface ConsultErrorResponse {
 export interface ConsultCreatedResponse {
   id: string;
   status: string;
+}
+
+export interface ConsultFormProps {
+  product?: Product;
 }

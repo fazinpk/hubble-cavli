@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { PRODUCTS } from "@consts/products.const";
+import type { Product } from "@app-types/product.type";
 import { consultSchema, type ConsultInput } from "@validation/consult.schema";
 
 import {
@@ -13,12 +12,7 @@ import {
 } from "./consts";
 import type { ConsultCreatedResponse, ConsultErrorResponse } from "./type";
 
-export const useConsultFormController = () => {
-  const searchParams = useSearchParams();
-  const product = PRODUCTS.find(
-    ({ slug }) => slug === searchParams.get("product"),
-  );
-
+export const useConsultFormController = (product?: Product) => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [consultation, setConsultation] =
     useState<ConsultCreatedResponse | null>(null);
