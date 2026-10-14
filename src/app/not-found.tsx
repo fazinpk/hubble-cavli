@@ -8,7 +8,7 @@ export default function NotFound() {
       </p>
       <h1 className="mt-2 text-3xl font-bold text-navy">Page not found</h1>
       <p className="mt-3 text-muted">
-        The page you are looking for doesn&apos;t exist or has moved.
+        The page you are looking for doesn&apos;t exist.
       </p>
       <ButtonLink href="/#modules" className="mt-8">
         Browse modules

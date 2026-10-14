@@ -12,7 +12,6 @@ const createPrismaClient = () =>
     }),
   });
 
-// Next.js dev hot reload re-runs this module; reuse one client so connections don't pile up.
 const globalForPrisma = globalThis as unknown as {
   prisma?: ReturnType<typeof createPrismaClient>;
 };

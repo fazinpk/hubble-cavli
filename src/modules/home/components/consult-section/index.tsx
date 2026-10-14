@@ -14,7 +14,7 @@ const ConsultSection: FC = () => (
   <section
     id="consult"
     aria-labelledby="consult-heading"
-    className="mx-auto grid max-w-7xl scroll-mt-24 gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2"
+    className="mx-auto grid max-w-7xl scroll-mt-24 grid-cols-1 gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2"
   >
     <div>
       <SectionHeading
