@@ -64,134 +64,22 @@ For the live site, replace `http://localhost:3000` with `https://hubble-cavli.ve
 
 12 tables in PostgreSQL. Tables 1–9 hold scraped exhibitor data, table 10 logs scraper runs, and tables 11–12 hold Consult Now submissions.
 
-```mermaid
-erDiagram
-  events ||--o{ shows : has
-  shows ||--o{ booths : has
-  shows ||--o{ exhibitors : has
-  booths |o--o{ exhibitors : "assigned to"
-  countries |o--o{ companies : "located in"
-  companies ||--o{ social_links : has
-  companies ||--o{ exhibitors : "takes part as"
-  exhibitors ||--o{ exhibitor_categories : has
-  categories ||--o{ exhibitor_categories : has
-  consultations ||--o| bookings : has
-```
-
 ### Tables
 
-**1. `events`**: the trade fair as listed on MMI Connect (`ep-blr-2026`).
-
-| Column | Notes  |
-| ------ | ------ |
-| `id`   | PK     |
-| `slug` | Unique |
-
-**2. `shows`**: the shows inside an event (electronica India, productronica India).
-
-| Column                         | Notes                   |
-| ------------------------------ | ----------------------- |
-| `id`                           | PK, MMI Connect show id |
-| `event_id`                     | FK → `events`           |
-| `name`, `starts_at`, `ends_at` |                         |
-
-**3. `booths`**: a booth at a show.
-
-| Column    | Notes                              |
-| --------- | ---------------------------------- |
-| `show_id` | PK (with `code`), FK → `shows`     |
-| `code`    | PK (with `show_id`), e.g. `H5.F95` |
-| `hall`    |                                    |
-
-**4. `countries`**
-
-| Column | Notes  |
-| ------ | ------ |
-| `id`   | PK     |
-| `name` | Unique |
-
-**5. `companies`**: one row per company, however many shows it exhibits at.
-
-| Column                                                           | Notes                          |
-| ---------------------------------------------------------------- | ------------------------------ |
-| `id`                                                             | PK                             |
-| `mmi_user_id`                                                    | Unique, MMI Connect company id |
-| `name`, `website`, `logo_url`, `profile`                         |                                |
-| `address_line1`, `address_line2`, `city`, `state`, `postal_code` |                                |
-| `country_id`                                                     | FK → `countries`, nullable     |
-| `created_at`, `updated_at`                                       |                                |
-
-**6. `social_links`**
-
-| Column       | Notes                                          |
-| ------------ | ---------------------------------------------- |
-| `id`         | PK                                             |
-| `company_id` | FK → `companies`                               |
-| `platform`   | `LINKEDIN`, `TWITTER`, `FACEBOOK` or `YOUTUBE` |
-| `url`        |                                                |
-
-Unique on (`company_id`, `platform`).
-
-**7. `exhibitors`**: a company taking part in one show.
-
-| Column                     | Notes                                               |
-| -------------------------- | --------------------------------------------------- |
-| `id`                       | PK                                                  |
-| `mmi_customer_id`          | Unique, MMI Connect exhibitor id (the upsert key)   |
-| `company_id`               | FK → `companies`                                    |
-| `show_id`                  | FK → `shows`                                        |
-| `booth_code`               | FK (`show_id`, `booth_code`) → `booths`, nullable   |
-| `last_seen_at`             | Last successful scrape that returned this exhibitor |
-| `created_at`, `updated_at` |                                                     |
-
-Unique on (`company_id`, `show_id`).
-
-**8. `categories`**: product and sector categories.
-
-| Column                                  | Notes                       |
-| --------------------------------------- | --------------------------- |
-| `id`                                    | PK, MMI Connect category id |
-| `type`                                  | `SECTOR` or `EXHIBITOR`     |
-| `main_category`, `name`, `sub_category` |                             |
-
-**9. `exhibitor_categories`**: links exhibitors to categories (many-to-many).
-
-| Column         | Notes                                       |
-| -------------- | ------------------------------------------- |
-| `exhibitor_id` | PK (with `category_id`), FK → `exhibitors`  |
-| `category_id`  | PK (with `exhibitor_id`), FK → `categories` |
-
-**10. `scrape_runs`**: one row per scraper run.
-
-| Column                                                                     | Notes                            |
-| -------------------------------------------------------------------------- | -------------------------------- |
-| `id`                                                                       | PK                               |
-| `status`                                                                   | `RUNNING`, `SUCCESS` or `FAILED` |
-| `started_at`, `finished_at`                                                |                                  |
-| `pages_fetched`, `exhibitors_found`, `exhibitors_saved`, `detail_failures` |                                  |
-| `error_message`                                                            |                                  |
-
-**11. `consultations`**: every Consult Now submission (`POST /api/consult`).
-
-| Column                     | Notes                           |
-| -------------------------- | ------------------------------- |
-| `id`                       | PK                              |
-| `name`, `email`, `message` |                                 |
-| `phone`, `company`         | Nullable                        |
-| `status`                   | `PENDING`, `BOOKED` or `FAILED` |
-| `created_at`, `updated_at` |                                 |
-
-**12. `bookings`**: the time slot picked for a consultation.
-
-| Column                         | Notes                                                   |
-| ------------------------------ | ------------------------------------------------------- |
-| `id`                           | PK                                                      |
-| `consultation_id`              | Unique, FK → `consultations` (at most one booking each) |
-| `starts_at`                    | Unique, so a slot can't be booked twice                 |
-| `ends_at`                      |                                                         |
-| `google_event_id`, `meet_link` | From Google Calendar                                    |
-| `confirmation_sent_at`         | When the confirmation email was sent                    |
-| `created_at`                   |                                                         |
+| #   | Table                  | Columns                                                                                                                                                                             | Relationships                                                            |
+| --- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| 1   | `events`               | `id` PK, `slug` unique                                                                                                                                                              | Has many `shows`                                                         |
+| 2   | `shows`                | `id` PK (MMI show id), `event_id`, `name`, `starts_at`, `ends_at`                                                                                                                   | Belongs to `events`; has many `booths` and `exhibitors`                  |
+| 3   | `booths`               | `show_id` + `code` PK, `hall`                                                                                                                                                       | Belongs to `shows`; has many `exhibitors`                                |
+| 4   | `countries`            | `id` PK, `name` unique                                                                                                                                                              | Has many `companies`                                                     |
+| 5   | `companies`            | `id` PK, `mmi_user_id` unique, `name`, `website`, `logo_url`, `profile`, `address_line1`, `address_line2`, `city`, `state`, `postal_code`, `country_id`, `created_at`, `updated_at` | Belongs to `countries` (optional); has many `social_links`, `exhibitors` |
+| 6   | `social_links`         | `id` PK, `company_id`, `platform` (LinkedIn, Twitter, Facebook, YouTube), `url`; unique (`company_id`, `platform`)                                                                  | Belongs to `companies`                                                   |
+| 7   | `exhibitors`           | `id` PK, `mmi_customer_id` unique (upsert key), `company_id`, `show_id`, `booth_code`, `last_seen_at`, `created_at`, `updated_at`; unique (`company_id`, `show_id`)                 | Belongs to `companies`, `shows` and `booths` (optional)                  |
+| 8   | `categories`           | `id` PK (MMI category id), `type` (sector or exhibitor), `main_category`, `name`, `sub_category`                                                                                    | Many-to-many with `exhibitors`                                           |
+| 9   | `exhibitor_categories` | `exhibitor_id` + `category_id` PK                                                                                                                                                   | Links `exhibitors` and `categories`                                      |
+| 10  | `scrape_runs`          | `id` PK, `status` (running, success, failed), `started_at`, `finished_at`, `pages_fetched`, `exhibitors_found`, `exhibitors_saved`, `detail_failures`, `error_message`              | None                                                                     |
+| 11  | `consultations`        | `id` PK, `name`, `email`, `phone`, `company`, `message`, `status` (pending, booked, failed), `created_at`, `updated_at`                                                             | Has at most one `bookings` row                                           |
+| 12  | `bookings`             | `id` PK, `consultation_id` unique, `starts_at` unique (no double booking), `ends_at`, `google_event_id`, `meet_link`, `confirmation_sent_at`, `created_at`                          | Belongs to `consultations`                                               |
 
 ### Normalization (3NF)
 
